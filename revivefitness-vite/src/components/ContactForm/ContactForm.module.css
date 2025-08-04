@@ -1,0 +1,103 @@
+/* src/components/ContactPage/ContactForm/ContactForm.module.css */
+.contactBox {
+  flex: 1.5 1 400px;
+  min-width: 320px;
+  background: #181818;
+  padding: 2.2em 1.5em 2em;
+  border-radius: 1em;
+  box-shadow: 0 2px 24px rgba(0,0,0,0.13);
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.contactBox form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2em;
+}
+
+.formRow {
+  display: flex;
+  gap: 1em;
+  flex-wrap: wrap;
+}
+
+.inputGroup {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.inputGroup label {
+  font-size: 1.05rem;
+  color: #fff;
+  font-weight: 500;
+  margin-bottom: 0.45em;
+  letter-spacing: 0.01em;
+}
+
+.inputGroup input,
+.inputGroup textarea {
+  font-size: 1rem;
+  padding: 0.95em 0.95em;
+  border: 2px solid var(--sub-main-color-2);
+  background: #222;
+  color: #fff;
+  border-radius: 0.6em;
+  outline: none;
+  margin-bottom: 0.15em;
+  transition: border 0.18s, background 0.25s;
+  resize: none;
+}
+
+.inputGroup input:focus,
+.inputGroup textarea:focus {
+  border-color: #ffcc00;
+}
+
+.inputGroup textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.submitBtn {
+  background: #ff4500;
+  color: #fff;
+  font-size: 1.15rem;
+  border: none;
+  border-radius: 2em;
+  padding: 0.75em 0;
+  font-weight: 600;
+  margin-top: 0.7em;
+  transition: background 0.2s, transform 0.18s;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+}
+
+.submitBtn:hover {
+  background: #e03c00;
+}
+
+.submitBtn:active {
+  transform: scale(.97);
+}
+
+@media (max-width: 950px) {
+  .contactBox { width: 100%; min-width: 240px; }
+}
+
+@media (max-width: 600px) {
+  .contactBox { padding: 1.4em 1em 1.6em; }
+  .formRow { flex-direction: column; gap: 0.75em; }
+  .inputGroup input, .inputGroup textarea {
+    font-size: 0.95rem;
+    padding: 0.85em 0.85em;
+  }
+  .submitBtn { font-size: 1.05rem; }
+}
+
+@media (max-width: 380px) {
+  .contactBox { padding: 1.2em 0.9em 1.4em; }
+  .submitBtn { font-size: 1rem; }
+}

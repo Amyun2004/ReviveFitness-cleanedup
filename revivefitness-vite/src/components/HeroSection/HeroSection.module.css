@@ -1,0 +1,68 @@
+/* src/components/HomePage/HeroSection/HeroSection.module.css */
+
+.heroSection { /* This maps to your original #home */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative; /* Add position relative for the ::before pseudo-element */
+    z-index: 5;
+}
+
+/* Overlay for the hero section, if desired */
+.heroSection::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5); /* Dark overlay */
+    z-index: 1;
+}
+
+
+.aboutContent { /* This maps to your original .about-content */
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto auto;
+    grid-template-areas:
+        "logo"
+        "quote"
+        "text"
+        "button";
+    gap: 1em;
+    z-index: 6; /* Ensure it's above the overlay */
+    max-width: 90%;
+    margin-inline: auto;
+    position: relative; /*Needs to be relative to contain its children correctly above overlay */ 
+}
+
+.reviveLogo { /* This maps to your original #logo */
+    grid-area: logo;
+    max-width: 90%;
+    max-height: 40em;
+    margin-left: 5%;
+}
+
+.quote { /* This maps to your original .quote */
+    grid-area: quote;
+    font-size: 1.5em;
+    color: var(--main-font-color); /* Use CSS variable */
+}
+
+.aboutTrainers { /* This maps to your original .about-trainers */
+    grid-area: text;
+    font-size: 1.2em;
+    color: var(--main-font-color); /* Use CSS variable */
+}
+
+/* If the nav-btn inside about-content has specific styles, add them here */
+.aboutContent :global(.nav-btn) {
+    grid-area: button;
+    justify-self: center;
+}

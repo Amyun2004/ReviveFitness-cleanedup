@@ -1,0 +1,409 @@
+/* src/components/common/Navbar/Navbar.module.css */
+
+/* Header */
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* Navbar container (the <nav id="navbar"> part) */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to right, black, #333);
+    padding: 2em 1em;
+    height: 60px;
+}
+
+/* Logo inside Navbar */
+.logo img {
+    height: 100px;
+    width: auto;
+    object-fit: contain;
+    padding: 0.5em;
+    max-width: none;
+}
+
+/* Navbar Links (Desktop) - the <ul> with className="navbar" */
+.navbarNav { /* Renamed to navbarNav to avoid conflict with the <nav id="navbar"> element's class */
+    display: flex;
+    list-style: none;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.navbarNav li {
+    padding: 0 1em;
+}
+
+/* Navbar Links (<a> tags within the main navbar) */
+.navLink { /* Specific to links in the main navbar */
+    color: white;
+    text-decoration: none;
+    padding: 0 0.25em;
+    /* transition: color 0.2s; - moved to global if it applies to all <a> */
+}
+
+.navLink:hover {
+    color: var(--sub-main-color-2); /* Uses global CSS variable */
+}
+
+/* Desktop "Join Us" button */
+.navBtnDesktop { /* Renamed from .nav-btn and .HIDEONMOBILE for clarity */
+    /* This uses the global .nav-btn styling, so we only need to manage its display here */
+    display: flex; /* Default for desktop, but its visibility is controlled by media queries */
+    align-items: center; /* Inherited from global .nav-btn */
+    justify-content: center; /* Inherited from global .nav-btn */
+    text-align: center; /* Inherited from global .nav-btn */
+    /* All other styling for this button comes from global.css .nav-btn */
+}
+
+/* Sidebar & Menu Button - General Styling */
+.sidebarOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 999;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: -300px; /* Hidden by default */
+    width: 300px;
+    height: 100%;
+    background-color: rgba(208, 181, 4, 0.2);
+    backdrop-filter: blur(20px);
+    box-shadow: -10px 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    z-index: 1000;
+    transition: right 0.3s ease-in-out, opacity 0.6s ease-in;
+    list-style: none;
+    box-sizing: border-box;
+    padding: 20px;
+}
+
+.sidebar.active { /* This class is added by React when sidebar is open */
+    right: 0;
+    opacity: 1;
+}
+
+.sidebarLogo { /* For the logo inside the sidebar */
+    display: block;
+    margin-bottom: 20px;
+}
+
+.sidebarLogo img {
+    max-width: 150px;
+    height: auto;
+}
+
+.sidebar li { /* List items within the sidebar */
+    font-size: 20px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.sidebarLink { /* Links within the sidebar */
+    width: 100%;
+    text-decoration: none;
+    color: #eee;
+    font-size: 1.1rem;
+    padding: 8px 0;
+    display: block;
+    transition: color 0.3s ease;
+}
+
+.sidebarLink:hover {
+    color: var(--sub-main-color-2); /* Uses global CSS variable */
+}
+
+/* Sidebar Join Us Button */
+.navBtnSidebar { /* Specific styles for the "Join Us" button inside the sidebar */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--sub-main-color-2); /* Uses global CSS variable */
+    color: black;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    text-align: center;
+    margin-top: 10px;
+    border: none;
+    cursor: pointer;
+    width: 80%;
+    max-width: 240px;
+    margin-inline: auto;
+    font-size: 1rem;
+}
+
+.navBtnSidebar:hover {
+    background-color: #e0b800;
+}
+
+/* Sidebar Close Button */
+.hideButton { /* For the div wrapping the close icon */
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2em;
+    height: 2em;
+    background-color: black;
+    border-radius: 5px;
+    padding: 0.3em;
+}
+
+.hideButton img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.hideButton img:hover {
+    transform: scale(1.2);
+}
+
+/* Menu Button (mobile toggle) - Default hidden */
+.menuButton {
+    display: none; /* Hidden by default */
+    cursor: pointer;
+}
+
+.menuButton img {
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.menuButton img:hover {
+    transform: scale(1.2);
+    background-color: rgb(220, 207, 18);
+    border-radius: 5px;
+}
+.adminBtn {
+  margin-right: 0.75rem; /* adds spacing between Admin and Join Us */
+}
+
+
+.adminBtn {
+  margin-right: 0.75rem; /* adds spacing between Admin and Join Us */
+}
+
+/* Logout button styling */
+.logoutBtn button {
+  background: transparent;
+  border: 2px solid var(--danger, #ff4444);
+  color: var(--danger, #ff4444);
+  padding: 0.5rem 1.2rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  text-decoration: none;
+}
+
+.logoutBtn button:hover {
+  background: var(--danger, #ff4444);
+  color: white;
+  transform: scale(1.05);
+}
+
+/* Logout button in sidebar */
+.navBtnSidebar[type="button"],
+button.navBtnSidebar {
+  background-color: var(--danger, #ff4444);
+  color: white;
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+button.navBtnSidebar:hover {
+  background-color: #cc0000;
+}
+/* Responsive Adjustments for Navbar and Sidebar */
+
+/* DEFAULT (Desktop: >= 891px) */
+@media (min-width: 891px) {
+    .hideOnMobile { /* For the main navbar links */
+        display: block; /* Ensure visibility for desktop nav items */
+    }
+    .navBtnDesktop { /* For the desktop "Join Us" button */
+        display: flex; /* Ensure visibility */
+    }
+    .menuButton,
+    .sidebar,
+    .sidebarOverlay {
+        display: none;
+    }
+}
+
+/* Tablet/Mid-Mobile: 431px to 890px */
+@media (max-width: 890px) {
+    .hideOnMobile { /* For the main navbar links */
+        display: none;
+    }
+    .navBtnDesktop { /* Desktop "Join Us" button also hides */
+        display: flex; /* Changed from your original where it remained visible */
+    }
+
+    .menuButton {
+        display: flex;
+        position: absolute;
+        top: 50%;
+        left: 50%; /* Middle */
+        transform: translate(-50%, -50%);
+        width: auto;
+        height: auto;
+        margin: 0;
+        padding: 0;
+        justify-content: center;
+        align-items: center;
+    }
+    /* sidebar.active manages display:flex when open; .sidebar-overlay is also managed by JS */
+}
+
+/* Small Mobile: <= 430px */
+@media (max-width: 430px) {
+    .navBtnDesktop { /* Desktop join us button hides */
+        display: none;
+    }
+    .menuButton {
+        left: 90%; /* Right side */
+        /* Other properties inherited from larger mobile media query */
+    }
+    .sidebar {
+        width: 100vw;
+        height: 100vh;
+        right: 0;
+        top: 0;
+        border-radius: 0;
+        padding: 20px;
+        overflow-y: auto;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+
+    .sidebarLogo {
+        align-self: flex-start;
+    }
+
+    .sidebarLogo img {
+        max-width: 120px;
+        height: auto;
+    }
+
+    .sidebar li {
+        font-size: 18px;
+    }
+
+    .sidebarLink {
+        font-size: 1.1rem;
+    }
+
+    .navBtnSidebar {
+        padding: 12px 20px;
+        width: 80%;
+        max-width: 250px;
+        margin: 20px auto 0 auto;
+        align-self: center;
+        
+    }
+
+    .hideButton {
+        top: 20px;
+        right: 20px;
+        width: 40px;
+        height: 40px;
+        padding: 8px;
+    }
+
+    .hideButton img {
+        width: 24px;
+        height: 24px;
+    }
+}
+@media (max-width: 530px) {
+    .navbar .nav-btn {
+        display: none;
+    }
+
+    .navBtnDesktop { /* Desktop join us button hides */
+        display: none;
+    }
+    .menuButton {
+        left: 90%; /* Right side */
+        /* Other properties inherited from larger mobile media query */
+    }
+    .sidebar {
+        width: 100vw;
+        height: 100vh;
+        right: 0;
+        top: 0;
+        border-radius: 0;
+        padding: 20px;
+        overflow-y: auto;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+
+    .sidebarLogo {
+        align-self: flex-start;
+    }
+
+    .sidebarLogo img {
+        max-width: 120px;
+        height: auto;
+    }
+
+    .sidebar li {
+        font-size: 18px;
+    }
+
+    .sidebarLink {
+        font-size: 1.1rem;
+    }
+
+    .navBtnSidebar {
+        padding: 12px 20px;
+        width: 80%;
+        max-width: 250px;
+        margin: 20px auto 0 auto;
+        align-self: center;
+        
+    }
+
+    .hideButton {
+        top: 20px;
+        right: 20px;
+        width: 40px;
+        height: 40px;
+        padding: 8px;
+    }
+
+    .hideButton img {
+        width: 24px;
+        height: 24px;
+    }
+}

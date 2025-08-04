@@ -1,0 +1,94 @@
+/* src/components/common/Footer/Footer.module.css */
+
+.footer { /* Corresponds to the <footer> tag */
+    background: linear-gradient(to right, black, #333);
+    color: var(--main-font-color); /* Using variable for consistency */
+    padding: 1em;
+    font-size: 1em;
+}
+
+.footerContainer { /* Corresponds to .footer-container */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 2em;
+    max-width: 1200px;
+    margin: auto; /* Use margin-inline: auto for consistency */
+    padding: inherit;
+}
+
+.footerLogo img { /* Corresponds to .footer-logo img */
+    height: 60px;
+    padding-left: 3em;
+}
+
+.footerLogo p { /* Corresponds to .footer-logo p */
+    padding-top: 1em;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+
+.footerLinks ul { /* Corresponds to .footer-links ul */
+    list-style: none;
+    padding: 1em;
+    margin: 0;
+}
+
+.footerLinks li { /* Corresponds to .footer-links li */
+    margin-bottom: 0.6em;
+}
+
+.footerLinks a { /* Corresponds to .footer-links a */
+    color: var(--sub-main-color-2);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footerLinks a:hover {
+    color: var(--main-font-color);
+}
+
+.footerContact { /* Corresponds to .footer-contact */
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footerSocial { /* Corresponds to .footer-social */
+    display: flex;
+    align-items: center;
+    /* No padding/margin for the ul/div itself, but for its children */
+}
+
+.footerSocial h4 { /* Corresponds to .footer-social h4 */
+    padding: 1em;
+}
+
+.footerSocial a img { /* Corresponds to .footer-social a img */
+    width: 3em;
+    margin-left: 1em;
+    filter: invert(80%);
+    transition: filter 0.2s;
+}
+
+.footerSocial a img:hover {
+    filter: invert(30%);
+}
+
+.footerBottom { /* Corresponds to .footer-bottom */
+    text-align: center;
+    margin-top: 1.5em;
+    font-size: 0.9em;
+    color: #aaa;
+}
+
+.footerBottom a { /* Corresponds to .footer-bottom a */
+    color: var(--sub-main-color-2);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footerBottom a:hover {
+    color: var(--main-font-color);
+}

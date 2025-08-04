@@ -1,0 +1,204 @@
+input{
+  width: 5%;
+}
+
+
+.modal-overlay {
+  position: fixed;
+  top:0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8); /* not transparent */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  position: relative;
+  z-index: 1001;
+  width: 90%;
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.auth-container {
+  width: 100vw;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+form.sign-in,
+form.log-in,
+form.log-in-admin {
+  background-color: #1f1f1f;
+  padding: 2.5rem;
+  border-radius: 1rem;
+  width: 100%;
+  max-width: 400px;
+  color: white;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  position: relative;
+}
+
+form h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #ffcc00;
+}
+
+form p {
+  margin: 0.8rem 0 0.3rem;
+  font-size: 0.9rem;
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  margin-bottom: 0.8rem;
+  border: 1px solid #555;
+  border-radius: 0.5rem;
+  background: #2c2c2c;
+  color: #fff;
+}
+
+input::placeholder {
+  color: #aaa;
+}
+
+button[type="submit"] {
+  width: 100%;
+  padding: 0.75rem;
+  background: #ffcc00;
+  border: none;
+  border-radius: 0.5rem;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  background: #e6b800;
+}
+
+.other-page-link {
+  display: block;
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: #aaa;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.other-page-link:hover {
+  color: #fff;
+}
+
+.auth-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-logo {
+  width: 100px; /* or whatever size looks right */
+  margin-bottom: 1rem;
+  margin-top: 2rem;
+}
+
+.admin-toggle {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 0.5rem;
+}
+
+.form-error {
+  color: red;
+  background: #ffe6e6;
+  padding: 0.5rem;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+.modal-overlay {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+
+/* Align checkbox + label neatly */
+.admin-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* style for your “other page” links */
+.other-page-link {
+  display: block;
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: #aaa;
+  text-decoration: underline;
+  text-align: center;
+}
+.other-page-link:hover {
+  color: #fff;
+}
+
+/* make sure your button spans full width */
+form.sign-in button[type="submit"] {
+  width: 100%;
+}
+
+
+form.log-in-admin {
+  background: linear-gradient(135deg, #1f1f1f 0%, #2a2a2a 100%);
+}
+
+/* Admin note styling */
+.admin-note {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #333;
+  text-align: center;
+}
+
+.admin-note small {
+  color: #888;
+  font-size: 0.75rem;
+}

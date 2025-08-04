@@ -1,0 +1,28 @@
+.mapContainer {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 */
+  height: 0;
+  overflow: hidden;
+  border-radius: 10px;
+  margin: 2em auto 4em;
+  max-width: 900px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+
+.mapContainer iframe {
+  position: absolute;
+  top: 0;
+  left: 15%;
+  width: 70%;
+  height: 100%;
+  border: 0;
+  border-radius: 10px;
+}
+
+@media (max-width: 900px) {
+  .mapContainer iframe {
+    left: 0;
+    width: 100%;
+  }
+}

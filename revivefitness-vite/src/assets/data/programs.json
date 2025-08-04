@@ -1,0 +1,27 @@
+[
+  {
+    "imgPath": "img_gym/personal coaching.png",
+    "name": "Personal Training",
+    "alt": "Personal Training"
+  },
+  {
+    "imgPath": "img_gym/Online_Coaching.png",
+    "name": "Online Coaching",
+    "alt": "Online Coaching"
+  },
+  {
+    "imgPath": "img_gym/strengthtraining.png",
+    "name": "Strength Training",
+    "alt": "Strength Training"
+  },
+  {
+    "imgPath": "img_gym/FatLoss.png",
+    "name": "Fat Loss",
+    "alt": "Fat Loss"
+  },
+  {
+    "imgPath": "img_gym/Bodybuilding2.png",
+    "name": "Bodybuilding",
+    "alt": "Bodybuilding"
+  }
+]

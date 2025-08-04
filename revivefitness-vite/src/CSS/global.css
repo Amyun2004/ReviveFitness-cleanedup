@@ -1,0 +1,217 @@
+/* 1. Reset & Base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.5;
+  background: var(--main-color, #000);
+  color: var(--main-font-color, #fff);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* 2. Theme Variables */
+:root {
+  --main-color: #000;
+  --sub-main-color: #333;
+  --sub-main-color-2: #ffcc00;
+  --main-font-color: #fff;
+
+  --accent: var(--sub-main-color-2);
+  --danger: #e53935;
+  --success: #2e7d32;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.2);
+  --shadow-md: 0 4px 10px rgba(0,0,0,0.25);
+
+  --transition-fast: 150ms ease;
+  --transition: 300ms ease;
+
+  --max-width: 1200px;
+}
+
+/* 3. Typography Foundation */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.2;
+}
+/* h1 { font-size: clamp(1rem, 2vw, 3rem); }
+h2 { font-size: clamp(1.75rem, 3vw, 2.25rem); }
+h3 { font-size: clamp(1.5rem, 2.5vw, 1.75rem); } */
+
+/* Accent span (used across headings/text) */
+span { color: var(--sub-main-color-2); }
+
+/* 4. Global Heading Block Helpers */
+.heading {
+  align-items: center;
+  color: var(--main-font-color);
+  margin-top: 3rem;
+  font-size: clamp(2rem, 1vw, 3rem);
+  font-weight: bold;
+  position: relative;
+  text-align: center;
+}
+.heading::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--sub-main-color-2), transparent);
+}
+.heading span { color: var(--sub-main-color-2); }
+
+span::before {
+  content: ' ';         /* this always prints one normal space */
+}
+
+.reg-texts {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.9);
+  margin-top: 2rem;
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+  padding: 0 2rem;
+  max-width: 900px;
+  margin-inline: auto;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.scroll-hint {
+  color: #bbb;
+  font-size: 1.1rem;
+  display: block;
+  margin-bottom: 0.8rem;
+}
+
+/* 5. Elements */
+img { max-width: 80%; display: block; }
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+a:hover, a:focus { color: var(--accent); }
+
+ul, ol { padding-left: 1.2rem; }
+
+hr {
+  border: none;
+  height: 1px;
+  background-color: #fff;
+}
+
+button {
+  cursor: pointer;
+  font: inherit;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 1.1rem;
+  background: var(--accent);
+  color: #000;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+button:hover { background: #e6b800; }
+button:active { transform: scale(.96); }
+
+input, textarea, select {
+  font: inherit;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid #444;
+  background: #111;
+  color: var(--main-font-color);
+  border-radius: var(--radius-sm);
+  width: 100%;
+}
+input:focus, textarea:focus, select:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* 6. Global CTA Button (Generic) */
+.nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: var(--sub-main-color-2);
+  border-radius: 5px;
+  padding: 0.5em;
+  width: 7em;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  overflow: hidden;
+}
+.nav-btn a {
+  color: #000;
+  font-weight: bold;
+  font-size: 1em;
+  text-decoration: none;
+  display: inline-block;
+}
+.nav-btn:hover { transform: scale(1.1); background: #e6b800; }
+.nav-btn:hover a { color: #fff; }
+
+/* 7. Utilities */
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+.flex { display: flex; }
+.flex-column { display: flex; flex-direction: column; }
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.grid { display: grid; gap: 1.5rem; }
+
+.hidden { display: none !important; }
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  border: 0;
+}
+
+.text-accent { color: var(--accent); }
+.bg-accent { background: var(--accent); color: #000; }
+
+.rounded { border-radius: var(--radius-md); }
+.shadow { box-shadow: var(--shadow-sm); }
+
+.section { padding: 4rem 0; }
+.section.dark { background: linear-gradient(to bottom right, #000, #111); }
+
+.empty-space {
+  height: 1em;
+  background: linear-gradient(to right, #000, #333);
+}
+
+/* 8. Feedback / State Utilities */
+.form-error { color: var(--danger); font-size: 0.85rem; }
+.success { color: var(--success); }
+.error   { color: var(--danger); }
+
+/* 9. Animations */
+@keyframes fadeInUp {
+  from { opacity:0; transform: translateY(12px); }
+  to   { opacity:1; transform: translateY(0); }
+}

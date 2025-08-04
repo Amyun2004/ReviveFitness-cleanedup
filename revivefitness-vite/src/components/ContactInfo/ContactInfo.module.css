@@ -1,0 +1,59 @@
+/* Keep file name & path: src/components/ContactPage/ContactInfo/ContactInfo.module.css */
+.contactInfo {
+  background: linear-gradient(to right, var(--main-color), var(--sub-main-color));
+  padding: 2.5em;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  margin: 0 auto; /* Parent layout handles margin */
+  flex: 1 1 320px;
+  text-align: left;
+  color: var(--main-font-color);
+  transition: transform 0.3s ease-in-out;
+}
+
+.contactInfo:hover { transform: translateY(-5px); }
+
+.contactInfo ul { list-style: none; padding: 0; margin: 0; }
+
+.contactInfo li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.4em;
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.9);
+}
+
+.contactInfo img {
+  width: 28px; height: 28px;
+  margin-right: 1em;
+  filter: invert(80%) sepia(100%) saturate(2000%) hue-rotate(30deg) brightness(1.2);
+  transition: transform 0.2s ease;
+}
+
+.contactInfo li:hover img { transform: scale(1.1); }
+
+.contactInfo span {
+  font-weight: 600;
+  color: var(--sub-main-color-2);
+}
+
+@media (max-width: 600px) {
+  .contactInfo {
+    padding: 1.8em;
+  }
+  .contactInfo li {
+    font-size: 1rem;
+    margin-bottom: 1em;
+  }
+  .contactInfo img {
+    width: 24px; height: 24px;
+  }
+}
+
+@media (max-width: 400px) {
+  .contactInfo li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .contactInfo img { margin: 0 0 0.5em; }
+}

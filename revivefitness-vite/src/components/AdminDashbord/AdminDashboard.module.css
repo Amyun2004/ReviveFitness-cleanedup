@@ -1,0 +1,198 @@
+.container {
+  min-height: 100vh;
+  padding: 2rem;
+  padding-top: 6rem;
+  background-color: #111111;
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.card {
+  width: 100%;
+  max-width: 1100px;
+}
+
+.sectionTitleWrapper {
+  text-align: center;
+  margin-top: 2rem;
+  margin-bottom: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.underline {
+  width: 100px;
+  height: 4px;
+  background-color: #facc15;
+  margin: 0.5rem auto 0;
+  border-radius: 2px;
+}
+
+.section {
+  background-color: #141414;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.05);
+  border: 1px solid #222;
+}
+
+.sectionTitle {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #facc15;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #2e2e2e;
+  padding-bottom: 0.5rem;
+}
+
+/* New search input style */
+.searchInput {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background-color: #2a2a2a;
+  color: #eee;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.searchInput:focus {
+  border-color: #facc15;
+}
+
+/* New scrollable container for members table */
+.scrollableTableWrapper {
+  max-height: 400px; /* Adjust height as needed */
+  overflow-y: auto;
+  border-radius: 8px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+  color: #e5e5e5;
+  table-layout: fixed;
+  min-width: 600px;
+}
+
+th, td {
+  padding: 14px 18px;
+  border-bottom: 1px solid #222;
+  text-align: left;
+  word-break: break-word;
+  white-space: normal;
+}
+
+th {
+  background-color: #1f1f1f;
+  color: #facc15;
+  font-weight: 600;
+  border-bottom: 1px solid #333;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+td {
+  background-color: #121212;
+}
+
+tr:nth-child(even) td {
+  background-color: #181818;
+}
+
+/* New scrollable container for programs */
+.scrollablePrograms {
+  max-height: 500px; /* Adjust height as needed */
+  overflow-y: auto;
+  padding-right: 15px; /* space for the scrollbar */
+}
+
+.programCard {
+  background-color: #1a1a1a;
+  border: 1px solid #2e2e2e;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.02);
+}
+
+.programCard h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #fff;
+  line-height: 1.4;
+}
+
+.programCard p {
+  color: #ccc;
+  margin: 0.5rem 0 1rem;
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background-color: #2a2a2a;
+  color: #eee;
+}
+
+textarea.input {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.saveBtn,
+.editBtn {
+  padding: 0.6rem 1.4rem;
+  background-color: #facc15;
+  color: black;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.25s ease, transform 0.1s ease;
+}
+
+.saveBtn:hover,
+.editBtn:hover {
+  background-color: #fbbf24;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 600px) {
+  .scrollableTableWrapper {
+    max-height: 300px;
+    overflow-x: auto;
+  }
+  .table {
+    min-width: 500px;
+  }
+  th, td {
+    white-space: nowrap;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

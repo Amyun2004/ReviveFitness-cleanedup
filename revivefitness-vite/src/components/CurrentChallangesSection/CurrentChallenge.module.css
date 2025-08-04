@@ -1,0 +1,178 @@
+/* CurrentChallenge.module.css */
+.container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 rem;         /* same side‑padding as your other sections */
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  justify-items: center;
+  text-align: center;
+}
+.card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.5rem;
+}
+
+.image {
+  width: 80%;
+  display: flex;
+  justify-self: center;
+  object-fit: cover;
+  aspect-ratio: 14 /10 ;
+  height: 70vh;
+  border-radius: 20px;
+}
+
+.overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+  width:80%;
+  gap: 0.5rem;
+}
+
+.title {
+  font-size: 1.75rem;
+  margin: 0;
+}
+
+.desc {
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* CurrentChallenge.module.css */
+
+.cta {
+  align-self: start;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #ffcc00;
+  color: black;
+  border-radius: 0.25rem;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* add this right below your .cta rules */
+.cta:hover { /* a slightly darker yellow */
+  color: white;               /* swap text to white for contrast */
+}
+
+.heading {
+  margin-top: 0.5rem;    /* shrink from whatever default you had */
+  margin-bottom: 1rem;   /* optional, to give a bit of breathing room */
+  font-size: 2rem;       /* whatever size you prefer */
+}
+
+.heading span::before {
+  content: ' ';         /* this always prints one normal space */
+}
+
+/* …your existing rules… */
+
+/* ============ Modal Overlay ============ */
+.modalOverlay {
+  position: fixed;
+  inset: 0;                            /* top/right/bottom/left = 0 */
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: #1f1f1f;
+  color: white;            /* ⬅️ override white text */
+  text-align: left;       /* ⬅️ left‑align headings & paragraphs */
+  padding: 2rem;
+  border-radius: 0.5rem;
+  max-width: 480px;
+  width: 90%;
+  
+  /* New additions: */
+  max-height: 90vh;       /* never taller than viewport */
+  overflow-y: auto;       /* scroll if it does */
+  
+  position: relative;
+  z-index: 1001;
+}
+
+
+.closeBtn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-size: 1.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: white;
+}
+
+.modalTitle {
+  margin-top: 0;
+  font-size: 1.75rem;
+}
+
+.modalDesc {
+  font-size: 1rem;
+  margin: 1rem 0;
+}
+
+/* …your existing modalOverlay/modalContent/etc… */
+
+.modalInfo {
+  margin: 1.5rem 0;
+  text-align: left;
+}
+
+.modalInfo h4 {
+  margin-bottom: 0.3rem;
+  font-size: 1.1rem;
+}
+
+.modalInfo p {
+  margin: 0 0 1rem;
+}
+
+.modalInfo ul {
+  padding-left: 1.2rem;
+  margin: 0 0 1.5rem;
+}
+
+.modalInfo li {
+  margin-bottom: 0.5rem;
+}
+
+
+.joinBtn {
+  padding: 0.6rem 1.2rem;
+  background-color: #ffcc00;
+  border: none;
+  border-radius: 0.25rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.joinBtn:hover {
+  background-color: #e6b800;
+}
+
+@media (max-width: 600px) {
+  .image {
+    aspect-ratio: 4 / 3;
+  }
+}

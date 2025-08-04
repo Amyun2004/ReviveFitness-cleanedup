@@ -1,0 +1,60 @@
+/* src/components/HomePage/AboutIntroSection/AboutIntroSection.module.css */
+
+.sectionAbout { /* Maps to .section-about */
+    background: linear-gradient(to right, var(--main-color), var(--sub-main-color));
+    color: var(--main-font-color);
+    max-width: 900px;
+    margin: 2em auto;
+    padding: 2em;
+    border-radius: 1.5em;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+.sectionAbout h1 { /* Maps to .section-about h1 */
+    margin-bottom: 0.5em;
+    color: var(--sub-main-color-2);
+    text-align: center;
+}
+
+.contentAbout { /* Maps to .content-about */
+    display: flex;
+    align-items: flex-start;
+    gap: 2em;
+    flex-wrap: wrap;
+}
+
+.logoAbout { /* Maps to .logo-about */
+    width: 160px;
+    height: auto;
+    border-radius: 1em;
+    background: #fff2;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+    margin: 0 auto;
+    display: block;
+}
+
+.textAbout { /* Maps to .text-about */
+    flex: 1 1 300px;
+}
+
+.textAbout h2 { /* Maps to .text-about h2 */
+    color: var(--sub-main-color-2);
+    margin-top: 1.2em;
+    margin-bottom: 0.2em;
+}
+
+.textAbout ul { /* Maps to .text-about ul */
+    margin: 0 0 1em 1.2em;
+}
+
+/* Add any media queries specifically for this section here */
+@media (max-width: 700px) {
+    .contentAbout {
+        flex-direction: column;
+        gap: 1em;
+        text-align: center;
+    }
+    .logoAbout {
+        margin-bottom: 1em;
+    }
+}

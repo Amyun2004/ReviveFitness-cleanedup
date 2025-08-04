@@ -1,58 +1,70 @@
-/* CurrentChallenge.module.css */
+/* container/grid setup */
 .container {
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
-  padding: 0 rem;         /* same side‑padding as your other sections */
+  padding: 0rem;
   display: grid;
   grid-template-columns: 1fr;
   gap: 2rem;
   justify-items: center;
   text-align: center;
 }
+
+/* Section heading */
+.heading {
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+}
+.heading span::before {
+  content: ' ';
+}
+
+/* Card with image + overlay */
 .card {
   position: relative;
   overflow: hidden;
   border-radius: 0.5rem;
 }
 
+/* Challenge image */
 .image {
   width: 80%;
   display: flex;
   justify-self: center;
   object-fit: cover;
-  aspect-ratio: 14 /10 ;
+  aspect-ratio: 14/10;
   height: 70vh;
   border-radius: 20px;
 }
 
+/* Dark overlay at bottom */
 .overlay {
   position: absolute;
   bottom: 0;
-  left: 0;
+  left: 10%;
   right: 0;
   padding: 1.5rem;
   background: rgba(0, 0, 0, 0.5);
   color: white;
   display: flex;
   flex-direction: column;
-  justify-self: center;
-  width:80%;
+  width: 80%;
   gap: 0.5rem;
 }
 
+/* Titles & text inside the overlay */
 .title {
   font-size: 1.75rem;
   margin: 0;
 }
-
 .desc {
   font-size: 1rem;
   margin: 0;
 }
 
-/* CurrentChallenge.module.css */
-
+/* Call-to-Action button */
 .cta {
   align-self: start;
   margin-top: 1rem;
@@ -60,32 +72,30 @@
   background-color: #ffcc00;
   color: black;
   border-radius: 0.25rem;
-  text-decoration: none;
   font-weight: bold;
+  text-decoration: none;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
-
-/* add this right below your .cta rules */
-.cta:hover { /* a slightly darker yellow */
-  color: white;               /* swap text to white for contrast */
+.cta:hover {
+  background-color: #e6b800;
+  color: white;
 }
 
-.heading {
-  margin-top: 0.5rem;    /* shrink from whatever default you had */
-  margin-bottom: 1rem;   /* optional, to give a bit of breathing room */
-  font-size: 2rem;       /* whatever size you prefer */
+/* Status messages */
+.status,
+.statusError {
+  text-align: center;
+  font-size: 1rem;
+  margin-top: 2rem;
 }
-
-.heading span::before {
-  content: ' ';         /* this always prints one normal space */
+.statusError {
+  color: #c00;
 }
-
-/* …your existing rules… */
 
 /* ============ Modal Overlay ============ */
 .modalOverlay {
   position: fixed;
-  inset: 0;                            /* top/right/bottom/left = 0 */
+  inset: 0;
   background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
@@ -95,21 +105,17 @@
 
 .modalContent {
   background: #1f1f1f;
-  color: white;            /* ⬅️ override white text */
-  text-align: left;       /* ⬅️ left‑align headings & paragraphs */
+  color: white;
+  text-align: left;
   padding: 2rem;
   border-radius: 0.5rem;
   max-width: 480px;
   width: 90%;
-  
-  /* New additions: */
-  max-height: 90vh;       /* never taller than viewport */
-  overflow-y: auto;       /* scroll if it does */
-  
+  max-height: 90vh;
+  overflow-y: auto;
   position: relative;
   z-index: 1001;
 }
-
 
 .closeBtn {
   position: absolute;
@@ -131,8 +137,6 @@
   font-size: 1rem;
   margin: 1rem 0;
 }
-
-/* …your existing modalOverlay/modalContent/etc… */
 
 .modalInfo {
   margin: 1.5rem 0;
@@ -157,7 +161,6 @@
   margin-bottom: 0.5rem;
 }
 
-
 .joinBtn {
   padding: 0.6rem 1.2rem;
   background-color: #ffcc00;
@@ -171,8 +174,9 @@
   background-color: #e6b800;
 }
 
+/* Responsive tweak */
 @media (max-width: 600px) {
   .image {
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 4/3;
   }
 }

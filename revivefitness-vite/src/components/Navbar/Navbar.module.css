@@ -53,7 +53,10 @@
 
 /* Desktop "Join Us" button */
 .navBtnDesktop { /* Renamed from .nav-btn and .HIDEONMOBILE for clarity */
+    
     /* This uses the global .nav-btn styling, so we only need to manage its display here */
+    
+    
     display: flex; /* Default for desktop, but its visibility is controlled by media queries */
     align-items: center; /* Inherited from global .nav-btn */
     justify-content: center; /* Inherited from global .nav-btn */
@@ -344,6 +347,10 @@ button.navBtnSidebar:hover {
     }
 }
 @media (max-width: 530px) {
+
+    .adminBtn,.joinBtn{
+        display: none;
+    }
     .navbar .nav-btn {
         display: none;
     }
@@ -405,5 +412,105 @@ button.navBtnSidebar:hover {
     .hideButton img {
         width: 24px;
         height: 24px;
+    }
+}
+
+/* …existing rules… */
+
+/* ─── Admin button (outlined) ───────────────────── */
+.adminBtn {
+  display: inline-block;        /* ensure it sizes like a button */
+  padding: 0.5rem 1.2rem;
+  border: 2px solid #ffcc00;
+  border-radius: 0.25rem;
+  background: transparent;
+  color: #ffcc00;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  margin-right: 0.75rem;        /* space between Admin & Join Us */
+}
+.adminBtn:hover {
+  background-color: #ffcc00;
+  color: #1f1f1f;
+}
+
+/* ─── Join Us button (filled) ───────────────────── */
+.joinBtn {
+  display: inline-block;
+  padding: 0rem 1rem;
+  border: none;
+  border-radius: 0.25rem;
+  background-color: #ffcc00;
+  color: #1f1f1f;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+.joinBtn:hover {
+  background-color: #e6b800;
+}
+
+/* ─── Desktop button wrapper (unchanged) ───────── */
+.navBtnDesktop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-left: 1rem;          /* gap between buttons */
+}
+
+/* …existing responsive media queries… */
+
+/* Wraps Admin / Join Us / Logout buttons in a horizontal row */
+.desktopButtonsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* pushes them to the right edge */
+  gap: 0.75rem;               /* space between each button */
+}
+
+/* Optional: reset any navBtnDesktop margins now that the gap handles spacing */
+.navBtnDesktop {
+  margin: 0;
+  
+}
+
+
+.sidebarButtonsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5 rem;           /* vertical space between buttons */    /* push to bottom of sidebar */
+  width: 100%;         /* full width so buttons center correctly */
+  align-items: center; /* center the buttons horizontally */
+}
+
+.navBtnbar{
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border: 2px solid red;
+  border-radius: 0.25rem;
+  background: transparent;
+  color: red;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.navBtnbar:hover{
+    background-color: red;
+    color: white
+}
+
+@media (max-width: 530px) {
+
+    .navBtnbar{
+        display: none;
+    }
+    .adminBtn,.joinBtn{
+        display: none;
+    }
+    .navbar .nav-btn {
+        display: none;
     }
 }

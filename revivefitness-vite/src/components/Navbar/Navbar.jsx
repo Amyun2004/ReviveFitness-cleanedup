@@ -56,37 +56,67 @@ export default function Navbar() {
               e.preventDefault();
               setSidebarOpen(true);
             }}>
-              <img src={menuIcon} alt="sidebar" />
+              <img src={menuIcon} alt="Open sidebar" />
             </a>
           </div>
 
-          {userType ? (
-            <div className={`${styles.navBtnDesktop} ${styles.logoutBtn}`}>
-              <button onClick={handleLogout}>Logout</button>
-            </div>
-          ) : (
-            <>
-              <div className={`${styles.navBtnDesktop} ${styles.adminBtn}`}>
-                <Link to="/adminlogin">Admin</Link>
-              </div>
-              <div className={`${styles.navBtnDesktop}`}>
-                <Link to="/signup">Join Us</Link>
-              </div>
-            </>
-          )}
+          {/* ─── DESKTOP BUTTONS WRAPPER ───────────────────────────── */}
+          <div className={styles.desktopButtonsContainer}>
+            {userType === 'admin' ? (
+              <>
+                {/* Admin (logged-in) */}
+                <div className={styles.navBtnDesktop}>
+                  <Link to="/admin/dashboard" className={styles.adminBtn}>
+                    Admin
+                  </Link>
+                </div>
+                {/* Logout */}
+                <div className={styles.navBtnDesktop}>
+                  <div className={styles.navBtnbar} onClick={handleLogout}>
+                      Logout
+                  </div>
+                </div>
+              </>
+            ) : userType === 'member' ? (
+              <>
+                {/* Member only sees Logout */}
+                <div className={styles.navBtnDesktop}>
+                  <div className={styles.navBtnbar} onClick={handleLogout}>
+                    Logout
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                {/* Not logged in: Admin (login) */}
+                <div className={styles.navBtnDesktop}>
+                  <Link to="/adminlogin" className={styles.adminBtn}>
+                    Admin
+                  </Link>
+                </div>
+                {/* Join Us */}
+                <div className={styles.navBtnDesktop}>
+                  <Link to="/signup" className={styles.joinBtn}>
+                    Join Us
+                  </Link>
+                </div>
+              </>
+            )}
+          </div>
+          {/* ──────────────────────────────────────────────────────────── */}
 
           {sidebarOpen && (
             <div className={styles.sidebarOverlay} onClick={() => setSidebarOpen(false)}>
-              <ul className={`${styles.sidebar} ${sidebarOpen ? styles.active : ''}`} onClick={e => e.stopPropagation()}>
+              <ul className={`${styles.sidebar} ${styles.active}`} onClick={e => e.stopPropagation()}>
                 <Link to="/" className={styles.sidebarLogo} onClick={() => setSidebarOpen(false)}>
                   <img src={logo} alt="ReviveFitness.np" />
                 </Link>
                 <li>
-                  <a className={styles.hideButton} href="#" onClick={e => {
+                  <a href="#" className={styles.hideButton} onClick={e => {
                     e.preventDefault();
                     setSidebarOpen(false);
                   }}>
-                    <img src={closeIcon} alt="close" />
+                    <img src={closeIcon} alt="Close sidebar" />
                   </a>
                 </li>
                 <li><Link to="/" className={styles.sidebarLink} onClick={() => setSidebarOpen(false)}>Home</Link></li>
@@ -95,20 +125,61 @@ export default function Navbar() {
                 <li><Link to="/contact" className={styles.sidebarLink} onClick={() => setSidebarOpen(false)}>Contact</Link></li>
                 <li><Link to="/membership" className={styles.sidebarLink} onClick={() => setSidebarOpen(false)}>Membership</Link></li>
                 
-                {userType ? (
-                  <button className={styles.navBtnSidebar} onClick={handleLogout}>
-                    Logout
-                  </button>
-                ) : (
-                  <>
-                    <Link to="/adminlogin" className={styles.navBtnSidebar} onClick={() => setSidebarOpen(false)}>
-                      Admin
-                    </Link>
-                    <Link to="/signup" className={styles.navBtnSidebar} onClick={() => setSidebarOpen(false)}>
-                      Join Us
-                    </Link>
-                  </>
-                )}
+                {/* ─── SIDEBAR BUTTONS WRAPPER ───────────────────────────── */}
+                <div className={styles.sidebarButtonsContainer}>
+                  {userType === 'admin' ? (
+                    <>
+                      {/* Admin when logged in */}
+                      <Link
+                        to="/admin/dashboard"
+                        className={styles.navBtnSidebar}
+                        onClick={() => setSidebarOpen(false)}
+                      >
+                        Admin
+                      </Link>
+                      {/* Logout */}
+                      <div className={styles.navBtnDesktop}>
+                        <button
+                        className={styles.navBtnSidebar}
+                        onClick={handleLogout}
+                      >
+                        Logout
+                      </button>
+                </div>
+                    </>
+                  ) : userType === 'member' ? (
+                    <>
+                      {/* Member only gets Logout */}
+                      <button
+                        className={styles.navBtnSidebar}
+                        onClick={handleLogout}
+                      >
+                        Logout
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      {/* Not logged in: Admin (login) */}
+                      <Link
+                        to="/adminlogin"
+                        className={styles.navBtnSidebar}
+                        onClick={() => setSidebarOpen(false)}
+                      >
+                        Admin
+                      </Link>
+                      {/* Join Us */}
+                      <Link
+                        to="/signup"
+                        className={styles.navBtnSidebar}
+                        onClick={() => setSidebarOpen(false)}
+                      >
+                        Join Us
+                      </Link>
+                    </>
+                  )}
+                </div>
+                {/* ──────────────────────────────────────────────────────────── */}
+
               </ul>
             </div>
           )}

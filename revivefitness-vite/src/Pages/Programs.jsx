@@ -1,23 +1,42 @@
-
+import { useState, useEffect } from 'react';
 import ProgramGallery from '../components/GallerySection/ProgramsProvided.jsx';
 import ProgramPricingSection from '../components/PricingSection/PricingSection.jsx';
 import CurrentChallenge from '../components/CurrentChallangesSection/CurrentChallenge.jsx';
-import challangePng from '../assets/img_gym/90-day-transformation.png'
-
 
 export default function Programs() {
+  const [currentChallenge, setCurrentChallenge] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const current = {
-    imageUrl: challangePng,
-    title: "90-day-challange",
-    description: "Ready to transform your lower body? Join our 30‑day Squat Challenge—daily, expertly crafted workouts designed to sculpt powerful legs, boost endurance, and unlock your inner strength. Let’s squat to success together!"
+  useEffect(() => {
+    // Fetch the current challenge from backend
+    fetch('http://localhost:8080/api/current-challenges')
+      .then(res => res.json())
+      .then(data => {
+        setCurrentChallenge(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching challenge:', err);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <div style={{ textAlign: 'center', padding: '2rem' }}>Loading...</div>;
   }
+
   return (
-    
     <div>
-      <CurrentChallenge{...current}/>
-      <ProgramGallery/>
-      <ProgramPricingSection/>
+      {currentChallenge && (
+  <CurrentChallenge
+    title={currentChallenge.title}
+    description={currentChallenge.description}
+    imageUrl={currentChallenge.imageUrl || currentChallenge.image_url}
+    /* etc */
+  />
+)}
+      <ProgramGallery />
+      <ProgramPricingSection />
     </div>
   );
 }

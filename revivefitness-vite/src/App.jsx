@@ -16,7 +16,7 @@ import Login from './components/LoginPage/login';
 import AdminLogin from './components/LoginPage/AdminLogin';
 import AdminDashboard from './components/AdminDashbord/AdminDashboard';
 
-function App2() {
+function App() {
   return (
     <BrowserRouter>
       <Routes>
@@ -47,4 +47,4 @@ function App2() {
   );
 }
 
-export default App2;
+export default App;

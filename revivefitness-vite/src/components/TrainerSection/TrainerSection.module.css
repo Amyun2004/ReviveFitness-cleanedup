@@ -10,9 +10,9 @@
   gap: 2em;
 }
 
-/* THIS makes every card the same width */
+/* make each card same width */
 .aboutContainer > * {
-  flex: 1 1 calc(33.333% - 2rem); /* 3 cards per row, minus gaps */
+  flex: 1 1 calc(33.333% - 2rem);
   min-width: 240px;
 }
 

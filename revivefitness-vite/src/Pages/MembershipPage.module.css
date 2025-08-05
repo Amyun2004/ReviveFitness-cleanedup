@@ -1,13 +1,13 @@
 /* src/pages/MembershipPage.module.css */
 .page {
   min-height: 100vh;
-  padding: 2rem;
-  padding-top: 6rem; /* Adjusted for fixed navbar */
+  padding: 2rem 1rem;
+  padding-top: 6rem;
   background-color: #111111;
   font-family: 'Segoe UI', sans-serif;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
 }
 
 .card {
@@ -18,16 +18,27 @@
   padding: 2rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   border: 1px solid #222;
+  margin-bottom: 1.5rem;
 }
 
+/* Profile */
 .profileSection {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem;
   margin-bottom: 2.5rem;
   padding-bottom: 1.5rem;
   border-bottom: 2px solid #2e2e2e;
-  position: relative;
+  text-align: center;
+}
+
+@media (min-width: 600px) {
+  .profileSection {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+  }
 }
 
 .avatar {
@@ -49,7 +60,7 @@
 }
 
 .title {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 700;
   color: #fff;
   margin: 0;
@@ -58,12 +69,28 @@
 .info {
   font-size: 1rem;
   color: #ccc;
-  margin: 0.5rem 0;
+  margin: 0.3rem 0;
 }
 
 .info strong {
   color: #eee;
   margin-right: 0.5rem;
+}
+
+.todayButton {
+  margin-top: 0.5rem;
+  padding: 0.4rem 1rem;
+  background-color: #facc15;
+  color: #000;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  border: none;
+  transition: background-color 0.2s;
+}
+
+.todayButton:hover {
+  background-color: #e6b800;
 }
 
 /* Section */
@@ -87,43 +114,53 @@
 /* Calendar */
 .calendarHeader {
   display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .monthYearTitle {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: #fff;
-  margin: 0 1rem;
 }
 
-.navButton, .todayButton {
-  padding: 0.5rem 1rem;
+.navButton {
+  padding: 0.4rem 0.8rem;
   background-color: #2e2e2e;
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
-.navButton:hover, .todayButton:hover {
+.navButton:hover {
   background-color: #444;
 }
 
 .attendanceSummary {
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   color: #ccc;
 }
 
 .calendarGrid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 0.5rem;
+  gap: 0.3rem;
   text-align: center;
+  max-width: 100%; /* Prevent overflow */
+  overflow-x: auto; /* Allow horizontal scroll if content exceeds */
+  box-sizing: border-box;
+}
+
+@media (max-width: 400px) {
+  .calendarGrid {
+    grid-template-columns: repeat(7, minmax(30px, 1fr)); /* Adjust column width for small screens */
+  }
 }
 
 .dayOfWeek {
@@ -138,6 +175,8 @@
   border-radius: 8px;
   color: #eee;
   position: relative;
+  min-width: 30px; /* Ensure minimum width to prevent shrinking */
+  box-sizing: border-box;
 }
 
 .emptyCell {
@@ -159,7 +198,7 @@
   position: absolute;
   top: 4px;
   right: 6px;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   line-height: 1;
   color: #1a1a1a;
 }
@@ -167,8 +206,14 @@
 /* Program Gallery */
 .programGallery {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: 1fr; /* Single column on mobile */
+  gap: 1.2rem;
+}
+
+@media (min-width: 600px) {
+  .programGallery {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
 }
 
 .programCard {
@@ -179,6 +224,7 @@
   flex-direction: column;
   border: 1px solid #333;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  padding: 1rem; /* Added padding to prevent content cutoff */
 }
 
 .programCard:hover {
@@ -188,23 +234,23 @@
 
 .programImage {
   width: 100%;
-  height: 200px;
+  height: 180px;
   object-fit: cover;
   border-bottom: 1px solid #333;
 }
 
 .programContent {
-  padding: 1.5rem;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
 }
 
 .programTitle {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: bold;
   color: #facc15;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.3rem;
 }
 
 .programDesc {
@@ -212,32 +258,129 @@
   font-size: 0.95rem;
   line-height: 1.5;
   flex-grow: 1;
-  margin-bottom: 1rem;
+  margin-bottom: 0.8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 
 .programDetails {
   display: flex;
   justify-content: space-between;
-  margin-top: 1rem;
-  padding-top: 1rem;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
   border-top: 1px solid #333;
 }
 
 .programDetails .info {
-  margin: 0;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
 .programDetails .info strong {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: #888;
   text-transform: uppercase;
 }
 
 .programDetails .info span {
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: #eee;
   font-weight: 500;
+}
+
+/* Buttons for Programs and Challenges */
+.joinButton {
+  padding: 0.6rem 1.2rem;
+  background: #facc15;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
+  margin-top: auto; /* Push to bottom in flex column */
+}
+
+.joinButton:hover {
+  background: #e6b800;
+}
+
+.leaveButton {
+  padding: 0.6rem 1.2rem;
+  background: #d32f2f;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
+  margin-top: auto; /* Push to bottom in flex column */
+}
+
+.leaveButton:hover {
+  background: #b71c1c;
+}
+
+/* Challenge */
+.challengeCard {
+  background-color: #222;
+  border: 1px solid #333;
+  border-radius: 12px;
+  overflow: hidden;
+  text-align: center;
+  padding: 1.5rem;
+}
+
+@media (min-width: 600px) {
+  .challengeCard {
+    display: flex;
+    flex-direction: row;
+    text-align: left;
+  }
+  .challengeImage {
+    margin-right: 1rem;
+    margin-bottom: 0;
+  }
+}
+
+.challengeImage {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.challengeContent h3 {
+  font-size: 1.5rem;
+  color: #facc15;
+  margin-bottom: 0.5rem;
+}
+
+.challengeContent p {
+  color: #ccc;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.challengeContent button {
+  padding: 0.6rem 1.2rem;
+  background: #facc15;
+  color: #000;
+  border-radius: 8px;
+  transition: background 0.2s;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.challengeContent button:hover {
+  background: #e6b800;
 }

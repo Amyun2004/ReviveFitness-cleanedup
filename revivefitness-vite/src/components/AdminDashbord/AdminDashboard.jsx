@@ -14,6 +14,7 @@ export default function AdminDashboard() {
   const [members, setMembers] = useState([]);
   const [filteredMembers, setFilteredMembers] = useState([]);
   const [programs, setPrograms] = useState([]);
+  const [trainers, setTrainers] = useState([]);
   const [currentChallenge, setCurrentChallenge] = useState(null);
   const [allChallenges, setAllChallenges] = useState([]);
   const [stats, setStats] = useState({});
@@ -28,7 +29,18 @@ export default function AdminDashboard() {
     description: '',
     duration: '',
     benefits: '',
-    imageUrl: ''
+    imageUrl: '',
+    trainerId: ''
+  });
+  
+  // MODIFIED: State to hold trainer form values
+  const [editTrainerId, setEditTrainerId] = useState(null);
+  const [editTrainerValues, setEditTrainerValues] = useState({
+    name: '',
+    title: '', // Changed from specialization
+    bio: '',
+    imgUrl: '', // Changed from imageUrl for consistency with backend
+    achievements: '' // Storing achievements as a single string, separated by newlines
   });
   
   // Edit state for challenge
@@ -45,9 +57,10 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [membersResponse, programsResponse, statsResponse, challengeResponse, allChallengesResponse] = await Promise.all([
+        const [membersResponse, programsResponse, trainersResponse, statsResponse, challengeResponse, allChallengesResponse] = await Promise.all([
           fetch('http://localhost:8080/api/members'),
           fetch('http://localhost:8080/api/programs'),
+          fetch('http://localhost:8080/api/trainers'),
           fetch('http://localhost:8080/api/admin/stats'),
           fetch('http://localhost:8080/api/current-challenges'),
           fetch('http://localhost:8080/api/current-challenges/all'),
@@ -55,6 +68,7 @@ export default function AdminDashboard() {
 
         if (!membersResponse.ok) throw new Error('Failed to fetch members');
         if (!programsResponse.ok) throw new Error('Failed to fetch programs');
+        if (!trainersResponse.ok) throw new Error('Failed to fetch trainers');
         if (!statsResponse.ok) throw new Error('Failed to fetch dashboard stats');
         if (!challengeResponse.ok) throw new Error('Failed to fetch current challenge');
 
@@ -64,6 +78,9 @@ export default function AdminDashboard() {
 
         const programsData = await programsResponse.json();
         setPrograms(programsData);
+        
+        const trainersData = await trainersResponse.json();
+        setTrainers(trainersData);
         
         const statsData = await statsResponse.json();
         setStats(statsData);
@@ -95,7 +112,90 @@ export default function AdminDashboard() {
     setFilteredMembers(result);
   }, [searchQuery, members]);
 
-  // Program editing functions
+  // MODIFIED: Function to open the edit/create form for a trainer
+  const handleEditTrainer = (trainer) => {
+    setEditTrainerId(trainer.id);
+    setEditTrainerValues({
+      name: trainer.name || '',
+      title: trainer.title || '',
+      bio: trainer.bio || '',
+      imgUrl: trainer.imgUrl || '',
+      // Convert achievements array back to a newline-separated string for the textarea
+      achievements: trainer.achievements ? trainer.achievements.join('\n') : ''
+    });
+  };
+
+  // MODIFIED: Function to save a new or existing trainer
+  const handleSaveTrainer = async (trainerId) => {
+    // Convert the newline-separated string of achievements into an array
+    const achievementsArray = editTrainerValues.achievements.split('\n').filter(line => line.trim() !== '');
+    
+    const trainerData = {
+      name: editTrainerValues.name,
+      title: editTrainerValues.title,
+      bio: editTrainerValues.bio,
+      imgUrl: editTrainerValues.imgUrl,
+      achievements: achievementsArray
+    };
+
+    try {
+      const isNewTrainer = trainerId === 'new';
+      const url = isNewTrainer 
+        ? 'http://localhost:8080/api/trainers' 
+        : `http://localhost:8080/api/trainers/${trainerId}`;
+      
+      const response = await fetch(url, {
+        method: isNewTrainer ? 'POST' : 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(trainerData),
+      });
+
+      if (!response.ok) {
+          const errorBody = await response.text();
+          throw new Error(`Failed to save trainer: ${errorBody}`);
+      }
+
+      const savedTrainer = await response.json();
+      
+      if (isNewTrainer) {
+        setTrainers([...trainers, savedTrainer]);
+      } else {
+        setTrainers(trainers.map(t => (t.id === trainerId ? savedTrainer : t)));
+      }
+      
+      setEditTrainerId(null);
+      setSuccess(isNewTrainer ? 'Trainer created successfully!' : 'Trainer updated successfully!');
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      console.error('Save error:', err);
+      setError("Failed to save trainer. Please try again.");
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
+  const handleDeleteTrainer = async (trainerId) => {
+    if (!window.confirm('Are you sure you want to delete this trainer?')) return;
+    
+    try {
+      const response = await fetch(`http://localhost:8080/api/trainers/${trainerId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) throw new Error('Failed to delete trainer');
+
+      setTrainers(trainers.filter(t => t.id !== trainerId));
+      setSuccess('Trainer deleted successfully!');
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      console.error('Delete error:', err);
+      setError("Failed to delete trainer. Please try again.");
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
+  // Program editing functions (updated to include trainer assignment)
   const handleEditProgram = (program) => {
     setEditProgramId(program.id);
     setEditProgramValues({
@@ -103,7 +203,8 @@ export default function AdminDashboard() {
       description: program.description || '',
       duration: program.duration || '',
       benefits: program.benefits || '',
-      imageUrl: program.imageUrl || ''
+      imageUrl: program.imageUrl || '',
+      trainerId: program.trainerId || ''
     });
   };
 
@@ -162,7 +263,7 @@ export default function AdminDashboard() {
     }
   };
 
-  // Challenge editing functions
+  // Challenge editing functions (unchanged)
   const handleEditChallenge = (challenge) => {
     setEditingChallenge(true);
     setEditChallengeValues({
@@ -245,7 +346,6 @@ export default function AdminDashboard() {
 
       setAllChallenges(allChallenges.filter(c => c.id !== challengeId));
       if (currentChallenge && currentChallenge.id === challengeId) {
-        // Set the first available challenge as current, or null
         const remaining = allChallenges.filter(c => c.id !== challengeId);
         setCurrentChallenge(remaining[0] || null);
       }
@@ -282,6 +382,12 @@ export default function AdminDashboard() {
     navigate('/adminlogin');
   };
 
+  // Helper function to get trainer name by ID
+  const getTrainerName = (trainerId) => {
+    const trainer = trainers.find(t => t.id === trainerId);
+    return trainer ? trainer.name : 'Unassigned';
+  };
+
   if (loading) return (
     <div className={styles.container}>
       <p>Loading...</p>
@@ -306,8 +412,385 @@ export default function AdminDashboard() {
           <div className={styles.statsGrid}>
             <StatsCard title="Total Members" value={stats.totalMembers || 0} />
             <StatsCard title="Total Programs" value={stats.totalPrograms || 0} />
+            <StatsCard title="Total Trainers" value={trainers.length || 0} />
             <StatsCard title="Active Admins" value={stats.totalActiveAdmins || 0} />
-            <StatsCard title="Today's Attendance" value={stats.todayAttendance || 0} />
+          </div>
+        </section>
+
+        {/* MODIFIED: Trainers Section */}
+        <section className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Manage Trainers</h2>
+            <button 
+              className={styles.addProgramBtn} 
+              onClick={() => {
+                setEditTrainerId('new');
+                setEditTrainerValues({ // Reset for new trainer
+                  name: '', title: '', bio: '', imgUrl: '', achievements: ''
+                });
+              }}
+            >
+              + Add New Trainer
+            </button>
+          </div>
+          
+          {/* MODIFIED: New Trainer Form */}
+          {editTrainerId === 'new' && (
+            <div className={styles.programCard}>
+              <div className={styles.editForm}>
+                <h3 style={{color: '#facc15', marginBottom: '1rem'}}>Create New Trainer</h3>
+                <div className={styles.formRow}>
+                  <div className={styles.formGroup}>
+                    <label>Full Name</label>
+                    <input type="text" className={styles.input} value={editTrainerValues.name}
+                      onChange={(e) => setEditTrainerValues({...editTrainerValues, name: e.target.value})}
+                      placeholder="Trainer Name"/>
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label>Title</label>
+                    <input type="text" className={styles.input} value={editTrainerValues.title}
+                      onChange={(e) => setEditTrainerValues({...editTrainerValues, title: e.target.value})}
+                      placeholder="e.g., Head Coach, Yoga Instructor"/>
+                  </div>
+                </div>
+                
+                <div className={styles.formGroup}>
+                  <label>Bio</label>
+                  <textarea className={styles.textarea} value={editTrainerValues.bio}
+                    onChange={(e) => setEditTrainerValues({...editTrainerValues, bio: e.target.value})}
+                    placeholder="Brief description about the trainer" rows="3"/>
+                </div>
+                
+                <div className={styles.formGroup}>
+                  <label>Achievements (one per line)</label>
+                  <textarea className={styles.textarea} value={editTrainerValues.achievements}
+                    onChange={(e) => setEditTrainerValues({...editTrainerValues, achievements: e.target.value})}
+                    placeholder="Certified Personal Trainer&#10;5+ Years of Experience&#10;National Bodybuilding Finalist" rows="4"/>
+                </div>
+                
+                <div className={styles.formGroup}>
+                  <label>Profile Image URL</label>
+                  <input type="text" className={styles.input} value={editTrainerValues.imgUrl}
+                    onChange={(e) => setEditTrainerValues({...editTrainerValues, imgUrl: e.target.value})}
+                    placeholder="Image URL"/>
+                </div>
+                
+                {editTrainerValues.imgUrl && (
+                  <div className={styles.imagePreview}>
+                    <img src={editTrainerValues.imgUrl} alt="Trainer preview" />
+                  </div>
+                )}
+                
+                <div className={styles.buttonGroup}>
+                  <button className={styles.saveBtn} onClick={() => handleSaveTrainer('new')}>Create Trainer</button>
+                  <button className={styles.cancelBtn} onClick={() => setEditTrainerId(null)}>Cancel</button>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <div className={styles.scrollablePrograms}>
+            {trainers.map(trainer => (
+              <div key={trainer.id} className={styles.programCard}>
+                {editTrainerId === trainer.id ? (
+                  // MODIFIED: Edit Trainer Form
+                  <div className={styles.editForm}>
+                    <div className={styles.formRow}>
+                      <div className={styles.formGroup}>
+                        <label>Full Name</label>
+                        <input type="text" className={styles.input} value={editTrainerValues.name}
+                          onChange={(e) => setEditTrainerValues({...editTrainerValues, name: e.target.value})}
+                          placeholder="Trainer Name"/>
+                      </div>
+                      <div className={styles.formGroup}>
+                        <label>Title</label>
+                        <input type="text" className={styles.input} value={editTrainerValues.title}
+                          onChange={(e) => setEditTrainerValues({...editTrainerValues, title: e.target.value})}
+                          placeholder="e.g., Head Coach, Yoga Instructor"/>
+                      </div>
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label>Bio</label>
+                      <textarea className={styles.textarea} value={editTrainerValues.bio}
+                        onChange={(e) => setEditTrainerValues({...editTrainerValues, bio: e.target.value})}
+                        placeholder="Brief description about the trainer" rows="3"/>
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label>Achievements (one per line)</label>
+                      <textarea className={styles.textarea} value={editTrainerValues.achievements}
+                        onChange={(e) => setEditTrainerValues({...editTrainerValues, achievements: e.target.value})}
+                        placeholder="Certified Personal Trainer&#10;5+ Years of Experience&#10;National Bodybuilding Finalist" rows="4"/>
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label>Profile Image URL</label>
+                      <input type="text" className={styles.input} value={editTrainerValues.imgUrl}
+                        onChange={(e) => setEditTrainerValues({...editTrainerValues, imgUrl: e.target.value})}
+                        placeholder="Image URL"/>
+                    </div>
+                    {editTrainerValues.imgUrl && (
+                      <div className={styles.imagePreview}>
+                        <img src={editTrainerValues.imgUrl} alt="Trainer preview" />
+                      </div>
+                    )}
+                    <div className={styles.buttonGroup}>
+                      <button className={styles.saveBtn} onClick={() => handleSaveTrainer(trainer.id)}>Save</button>
+                      <button className={styles.cancelBtn} onClick={() => setEditTrainerId(null)}>Cancel</button>
+                    </div>
+                  </div>
+                ) : (
+                  // MODIFIED: Trainer Display Card
+                  <div className={styles.programDisplay}>
+                    <div className={styles.programHeader}>
+                      <h3>{trainer.name}</h3>
+                      <div className={styles.programActions}>
+                        <button className={styles.editBtn} onClick={() => handleEditTrainer(trainer)}>Edit</button>
+                        <button className={styles.deleteBtn} onClick={() => handleDeleteTrainer(trainer.id)}>Delete</button>
+                      </div>
+                    </div>
+                    <p className={styles.programDesc}>{trainer.bio}</p>
+                    <div className={styles.programMeta}>
+                      <span><strong>Title:</strong> {trainer.title || 'N/A'}</span>
+                    </div>
+                    {trainer.achievements && trainer.achievements.length > 0 && (
+                      <div className={styles.programMeta}>
+                        <span><strong>Achievements:</strong> {trainer.achievements.join(', ')}</span>
+                      </div>
+                    )}
+                    {trainer.imgUrl && (
+                      <img src={trainer.imgUrl} alt={trainer.name} className={styles.programImage} />
+                    )}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Programs Section (Updated with trainer assignment) */}
+        <section className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Manage Programs</h2>
+            <button 
+              className={styles.addProgramBtn} 
+              onClick={() => {
+                setEditProgramId('new');
+                setEditProgramValues({
+                  name: '',
+                  description: '',
+                  duration: '',
+                  benefits: '',
+                  imageUrl: '',
+                  trainerId: ''
+                });
+              }}
+            >
+              + Add New Program
+            </button>
+          </div>
+          
+          {/* Show new program form at the top if creating new */}
+          {editProgramId === 'new' && (
+            <div className={styles.programCard}>
+              <div className={styles.editForm}>
+                <h3 style={{color: '#facc15', marginBottom: '1rem'}}>Create New Program</h3>
+                <div className={styles.formGroup}>
+                  <label>Program Name</label>
+                  <input
+                    type="text"
+                    className={styles.input}
+                    value={editProgramValues.name}
+                    onChange={(e) => setEditProgramValues({...editProgramValues, name: e.target.value})}
+                    placeholder="Program Name"
+                  />
+                </div>
+                
+                <div className={styles.formGroup}>
+                  <label>Description</label>
+                  <textarea
+                    className={styles.textarea}
+                    value={editProgramValues.description}
+                    onChange={(e) => setEditProgramValues({...editProgramValues, description: e.target.value})}
+                    placeholder="Description"
+                    rows="3"
+                  />
+                </div>
+                
+                <div className={styles.formRow}>
+                  <div className={styles.formGroup}>
+                    <label>Duration</label>
+                    <input
+                      type="text"
+                      className={styles.input}
+                      value={editProgramValues.duration}
+                      onChange={(e) => setEditProgramValues({...editProgramValues, duration: e.target.value})}
+                      placeholder="e.g., 3 months"
+                    />
+                  </div>
+                  
+                  <div className={styles.formGroup}>
+                    <label>Cost/Benefits</label>
+                    <input
+                      type="text"
+                      className={styles.input}
+                      value={editProgramValues.benefits}
+                      onChange={(e) => setEditProgramValues({...editProgramValues, benefits: e.target.value})}
+                      placeholder="e.g., $99/month"
+                    />
+                  </div>
+                </div>
+                
+                <div className={styles.formGroup}>
+                  <label>Assign Trainer</label>
+                  <select
+                    className={styles.input}
+                    value={editProgramValues.trainerId}
+                    onChange={(e) => setEditProgramValues({...editProgramValues, trainerId: e.target.value})}
+                  >
+                    <option value="">Select a trainer (optional)</option>
+                    {trainers.map(trainer => (
+                      <option key={trainer.id} value={trainer.id}>
+                        {trainer.name} - {trainer.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div className={styles.formGroup}>
+                  <label>Image URL</label>
+                  <input
+                    type="text"
+                    className={styles.input}
+                    value={editProgramValues.imageUrl}
+                    onChange={(e) => setEditProgramValues({...editProgramValues, imageUrl: e.target.value})}
+                    placeholder="Image URL"
+                  />
+                </div>
+                
+                {editProgramValues.imageUrl && (
+                  <div className={styles.imagePreview}>
+                    <img src={editProgramValues.imageUrl} alt="Program preview" />
+                  </div>
+                )}
+                
+                <div className={styles.buttonGroup}>
+                  <button className={styles.saveBtn} onClick={() => handleSaveProgram('new')}>Create Program</button>
+                  <button className={styles.cancelBtn} onClick={() => setEditProgramId(null)}>Cancel</button>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <div className={styles.scrollablePrograms}>
+            {programs.map(program => (
+              <div key={program.id} className={styles.programCard}>
+                {editProgramId === program.id ? (
+                  <div className={styles.editForm}>
+                    <div className={styles.formGroup}>
+                      <label>Program Name</label>
+                      <input
+                        type="text"
+                        className={styles.input}
+                        value={editProgramValues.name}
+                        onChange={(e) => setEditProgramValues({...editProgramValues, name: e.target.value})}
+                        placeholder="Program Name"
+                      />
+                    </div>
+                    
+                    <div className={styles.formGroup}>
+                      <label>Description</label>
+                      <textarea
+                        className={styles.textarea}
+                        value={editProgramValues.description}
+                        onChange={(e) => setEditProgramValues({...editProgramValues, description: e.target.value})}
+                        placeholder="Description"
+                        rows="3"
+                      />
+                    </div>
+                    
+                    <div className={styles.formRow}>
+                      <div className={styles.formGroup}>
+                        <label>Duration</label>
+                        <input
+                          type="text"
+                          className={styles.input}
+                          value={editProgramValues.duration}
+                          onChange={(e) => setEditProgramValues({...editProgramValues, duration: e.target.value})}
+                          placeholder="e.g., 3 months"
+                        />
+                      </div>
+                      
+                      <div className={styles.formGroup}>
+                        <label>Cost/Benefits</label>
+                        <input
+                          type="text"
+                          className={styles.input}
+                          value={editProgramValues.benefits}
+                          onChange={(e) => setEditProgramValues({...editProgramValues, benefits: e.target.value})}
+                          placeholder="e.g., $99/month"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className={styles.formGroup}>
+                      <label>Assign Trainer</label>
+                      <select
+                        className={styles.input}
+                        value={editProgramValues.trainerId}
+                        onChange={(e) => setEditProgramValues({...editProgramValues, trainerId: e.target.value})}
+                      >
+                        <option value="">Select a trainer (optional)</option>
+                        {trainers.map(trainer => (
+                          <option key={trainer.id} value={trainer.id}>
+                            {trainer.name} - {trainer.title}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    
+                    <div className={styles.formGroup}>
+                      <label>Image URL</label>
+                      <input
+                        type="text"
+                        className={styles.input}
+                        value={editProgramValues.imageUrl}
+                        onChange={(e) => setEditProgramValues({...editProgramValues, imageUrl: e.target.value})}
+                        placeholder="Image URL"
+                      />
+                    </div>
+                    
+                    {editProgramValues.imageUrl && (
+                      <div className={styles.imagePreview}>
+                        <img src={editProgramValues.imageUrl} alt="Program preview" />
+                      </div>
+                    )}
+                    
+                    <div className={styles.buttonGroup}>
+                      <button className={styles.saveBtn} onClick={() => handleSaveProgram(program.id)}>Save</button>
+                      <button className={styles.cancelBtn} onClick={() => setEditProgramId(null)}>Cancel</button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className={styles.programDisplay}>
+                    <div className={styles.programHeader}>
+                      <h3>{program.name}</h3>
+                      <div className={styles.programActions}>
+                        <button className={styles.editBtn} onClick={() => handleEditProgram(program)}>Edit</button>
+                        <button className={styles.deleteBtn} onClick={() => handleDeleteProgram(program.id)}>Delete</button>
+                      </div>
+                    </div>
+                    <p className={styles.programDesc}>{program.description}</p>
+                    <div className={styles.programMeta}>
+                      <span><strong>Duration:</strong> {program.duration || 'N/A'}</span>
+                      <span><strong>Cost:</strong> {program.benefits || 'N/A'}</span>
+                      <span><strong>Trainer:</strong> {getTrainerName(program.trainerId)}</span>
+                    </div>
+                    {program.imageUrl && (
+                      <img src={program.imageUrl} alt={program.name} className={styles.programImage} />
+                    )}
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </section>
 
@@ -466,200 +949,6 @@ export default function AdminDashboard() {
                     <button className={styles.deleteBtn} onClick={() => handleDeleteChallenge(challenge.id)}>Delete</button>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Programs Section */}
-        <section className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Manage Programs</h2>
-            <button 
-              className={styles.addProgramBtn} 
-              onClick={() => {
-                setEditProgramId('new');
-                setEditProgramValues({
-                  name: '',
-                  description: '',
-                  duration: '',
-                  benefits: '',
-                  imageUrl: ''
-                });
-              }}
-            >
-              + Add New Program
-            </button>
-          </div>
-          
-          {/* Show new program form at the top if creating new */}
-          {editProgramId === 'new' && (
-            <div className={styles.programCard}>
-              <div className={styles.editForm}>
-                <h3 style={{color: '#facc15', marginBottom: '1rem'}}>Create New Program</h3>
-                <div className={styles.formGroup}>
-                  <label>Program Name</label>
-                  <input
-                    type="text"
-                    className={styles.input}
-                    value={editProgramValues.name}
-                    onChange={(e) => setEditProgramValues({...editProgramValues, name: e.target.value})}
-                    placeholder="Program Name"
-                  />
-                </div>
-                
-                <div className={styles.formGroup}>
-                  <label>Description</label>
-                  <textarea
-                    className={styles.textarea}
-                    value={editProgramValues.description}
-                    onChange={(e) => setEditProgramValues({...editProgramValues, description: e.target.value})}
-                    placeholder="Description"
-                    rows="3"
-                  />
-                </div>
-                
-                <div className={styles.formRow}>
-                  <div className={styles.formGroup}>
-                    <label>Duration</label>
-                    <input
-                      type="text"
-                      className={styles.input}
-                      value={editProgramValues.duration}
-                      onChange={(e) => setEditProgramValues({...editProgramValues, duration: e.target.value})}
-                      placeholder="e.g., 3 months"
-                    />
-                  </div>
-                  
-                  <div className={styles.formGroup}>
-                    <label>Cost/Benefits</label>
-                    <input
-                      type="text"
-                      className={styles.input}
-                      value={editProgramValues.benefits}
-                      onChange={(e) => setEditProgramValues({...editProgramValues, benefits: e.target.value})}
-                      placeholder="e.g., $99/month"
-                    />
-                  </div>
-                </div>
-                
-                <div className={styles.formGroup}>
-                  <label>Image URL</label>
-                  <input
-                    type="text"
-                    className={styles.input}
-                    value={editProgramValues.imageUrl}
-                    onChange={(e) => setEditProgramValues({...editProgramValues, imageUrl: e.target.value})}
-                    placeholder="Image URL"
-                  />
-                </div>
-                
-                {editProgramValues.imageUrl && (
-                  <div className={styles.imagePreview}>
-                    <img src={editProgramValues.imageUrl} alt="Program preview" />
-                  </div>
-                )}
-                
-                <div className={styles.buttonGroup}>
-                  <button className={styles.saveBtn} onClick={() => handleSaveProgram('new')}>Create Program</button>
-                  <button className={styles.cancelBtn} onClick={() => setEditProgramId(null)}>Cancel</button>
-                </div>
-              </div>
-            </div>
-          )}
-          
-          <div className={styles.scrollablePrograms}>
-            {programs.map(program => (
-              <div key={program.id} className={styles.programCard}>
-                {editProgramId === program.id ? (
-                  <div className={styles.editForm}>
-                    <div className={styles.formGroup}>
-                      <label>Program Name</label>
-                      <input
-                        type="text"
-                        className={styles.input}
-                        value={editProgramValues.name}
-                        onChange={(e) => setEditProgramValues({...editProgramValues, name: e.target.value})}
-                        placeholder="Program Name"
-                      />
-                    </div>
-                    
-                    <div className={styles.formGroup}>
-                      <label>Description</label>
-                      <textarea
-                        className={styles.textarea}
-                        value={editProgramValues.description}
-                        onChange={(e) => setEditProgramValues({...editProgramValues, description: e.target.value})}
-                        placeholder="Description"
-                        rows="3"
-                      />
-                    </div>
-                    
-                    <div className={styles.formRow}>
-                      <div className={styles.formGroup}>
-                        <label>Duration</label>
-                        <input
-                          type="text"
-                          className={styles.input}
-                          value={editProgramValues.duration}
-                          onChange={(e) => setEditProgramValues({...editProgramValues, duration: e.target.value})}
-                          placeholder="e.g., 3 months"
-                        />
-                      </div>
-                      
-                      <div className={styles.formGroup}>
-                        <label>Cost/Benefits</label>
-                        <input
-                          type="text"
-                          className={styles.input}
-                          value={editProgramValues.benefits}
-                          onChange={(e) => setEditProgramValues({...editProgramValues, benefits: e.target.value})}
-                          placeholder="e.g., $99/month"
-                        />
-                      </div>
-                    </div>
-                    
-                    <div className={styles.formGroup}>
-                      <label>Image URL</label>
-                      <input
-                        type="text"
-                        className={styles.input}
-                        value={editProgramValues.imageUrl}
-                        onChange={(e) => setEditProgramValues({...editProgramValues, imageUrl: e.target.value})}
-                        placeholder="Image URL"
-                      />
-                    </div>
-                    
-                    {editProgramValues.imageUrl && (
-                      <div className={styles.imagePreview}>
-                        <img src={editProgramValues.imageUrl} alt="Program preview" />
-                      </div>
-                    )}
-                    
-                    <div className={styles.buttonGroup}>
-                      <button className={styles.saveBtn} onClick={() => handleSaveProgram(program.id)}>Save</button>
-                      <button className={styles.cancelBtn} onClick={() => setEditProgramId(null)}>Cancel</button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className={styles.programDisplay}>
-                    <div className={styles.programHeader}>
-                      <h3>{program.name}</h3>
-                      <div className={styles.programActions}>
-                        <button className={styles.editBtn} onClick={() => handleEditProgram(program)}>Edit</button>
-                        <button className={styles.deleteBtn} onClick={() => handleDeleteProgram(program.id)}>Delete</button>
-                      </div>
-                    </div>
-                    <p className={styles.programDesc}>{program.description}</p>
-                    <div className={styles.programMeta}>
-                      <span><strong>Duration:</strong> {program.duration || 'N/A'}</span>
-                      <span><strong>Cost:</strong> {program.benefits || 'N/A'}</span>
-                    </div>
-                    {program.imageUrl && (
-                      <img src={program.imageUrl} alt={program.name} className={styles.programImage} />
-                    )}
-                  </div>
-                )}
               </div>
             ))}
           </div>

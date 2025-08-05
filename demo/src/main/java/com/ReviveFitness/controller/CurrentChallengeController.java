@@ -1,5 +1,6 @@
 package com.ReviveFitness.controller;
 
+import com.ReviveFitness.dto.CurrentChallengeDTO;
 import com.ReviveFitness.model.CurrentChallenge;
 import com.ReviveFitness.service.CurrentChallengeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"})
 @RestController
@@ -17,35 +19,61 @@ public class CurrentChallengeController {
     @Autowired
     private CurrentChallengeService currentChallengeService;
 
-    // Get all challenges
+    // Get all challenges as DTOs
     @GetMapping("/all")
-    public ResponseEntity<List<CurrentChallenge>> getAllChallenges() {
-        List<CurrentChallenge> challenges = currentChallengeService.getAllChallenges();
-        return ResponseEntity.ok(challenges);
+    public ResponseEntity<List<CurrentChallengeDTO>> getAllChallenges() {
+        List<CurrentChallengeDTO> dtos = currentChallengeService.getAllChallenges()
+            .stream()
+            .map(c -> new CurrentChallengeDTO(
+                c.getId(),
+                c.getTitle(),
+                c.getDescription(),
+                c.getImageUrl()
+            ))
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
 
-    // Get the current/active challenge
+    // Get the current/active challenge as DTO
     @GetMapping
-    public ResponseEntity<CurrentChallenge> getCurrentChallenge() {
+    public ResponseEntity<CurrentChallengeDTO> getCurrentChallenge() {
         CurrentChallenge challenge = currentChallengeService.getOrCreateCurrentChallenge();
-        return ResponseEntity.ok(challenge);
+        CurrentChallengeDTO dto = new CurrentChallengeDTO(
+            challenge.getId(),
+            challenge.getTitle(),
+            challenge.getDescription(),
+            challenge.getImageUrl()
+        );
+        return ResponseEntity.ok(dto);
     }
 
-    // Create new challenge
+    // Create new challenge (returns DTO)
     @PostMapping
-    public ResponseEntity<CurrentChallenge> createChallenge(@RequestBody CurrentChallenge challenge) {
+    public ResponseEntity<CurrentChallengeDTO> createChallenge(@RequestBody CurrentChallenge challenge) {
         CurrentChallenge created = currentChallengeService.createChallenge(challenge);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        CurrentChallengeDTO dto = new CurrentChallengeDTO(
+            created.getId(),
+            created.getTitle(),
+            created.getDescription(),
+            created.getImageUrl()
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
-    // Update challenge
+    // Update challenge (returns DTO)
     @PutMapping("/{id}")
-    public ResponseEntity<CurrentChallenge> updateChallenge(
-            @PathVariable Long id, 
+    public ResponseEntity<CurrentChallengeDTO> updateChallenge(
+            @PathVariable Long id,
             @RequestBody CurrentChallenge updatedChallenge) {
         try {
             CurrentChallenge result = currentChallengeService.updateChallenge(id, updatedChallenge);
-            return ResponseEntity.ok(result);
+            CurrentChallengeDTO dto = new CurrentChallengeDTO(
+                result.getId(),
+                result.getTitle(),
+                result.getDescription(),
+                result.getImageUrl()
+            );
+            return ResponseEntity.ok(dto);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
@@ -62,12 +90,18 @@ public class CurrentChallengeController {
         }
     }
 
-    // Set a challenge as the current/active one
+    // Set a challenge as the current/active one (returns DTO)
     @PutMapping("/{id}/set-current")
-    public ResponseEntity<CurrentChallenge> setAsCurrentChallenge(@PathVariable Long id) {
+    public ResponseEntity<CurrentChallengeDTO> setAsCurrentChallenge(@PathVariable Long id) {
         try {
             CurrentChallenge current = currentChallengeService.setAsCurrentChallenge(id);
-            return ResponseEntity.ok(current);
+            CurrentChallengeDTO dto = new CurrentChallengeDTO(
+                current.getId(),
+                current.getTitle(),
+                current.getDescription(),
+                current.getImageUrl()
+            );
+            return ResponseEntity.ok(dto);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }

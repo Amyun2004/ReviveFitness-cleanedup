@@ -1,51 +1,44 @@
-// src/components/AboutPage/TrainerSection/TrainerSection.jsx
-
-import React from 'react';
-import TrainerCard from '../TrainerCard/TrainerCard'; // Corrected import path
-import sreejandaiImg from '../../assets/img_gym/sreejandai.png'; // Corrected import path
-import styles from './TrainerSection.module.css'; // Import the CSS Module
-import Trainer3 from '../../assets/img_gym/Trainer3.png'
-import Trainer2 from '../../assets/img_gym/Trainer2.png'
-
-const trainers = [
-    {
-        img: sreejandaiImg,
-        name: "Shreejan Shrestha",
-        title: "Certified Fitness Trainer",
-        achievements: [
-            "💪 2000+ Body Transformations",
-            "🏆 9 Years of Professional Experience",
-            "🥇🥇🥇 bodybuilder"
-        ],
-        bio: "With nearly a decade of experience, Shreejan has helped thousands achieve their fitness goals. His personalized coaching style combines science, discipline, and motivation to deliver lasting transformations."
-    },
-    {
-        img: Trainer2,
-        name: "Pratik kuwar",
-        title: "Trainer and Fitness Coach",
-        achievements : [],
-        bio: "I'm Pratik a trainer and fitness coach at Revive Fitness, responsible for guiding clients through personalized workout plans, helping with form correction, and supporting their overall fitness journey."
-    },
-
-    {
-        img: Trainer3,
-        name: "Yogesh chand",
-        title: "Instructor",
-        achievements : [],
-        bio: "My name is Yogesh instrutor at Revive fitness and I am here to develop and implement both generalized and personalized exercise and diet programs that improve the fitness and overall well-being of our clients."
-    }
-];
+import React, { useState, useEffect } from 'react';
+import TrainerCard from '../TrainerCard/TrainerCard';
+import styles from './TrainerSection.module.css';
 
 export default function TrainerSection() {
-    return (
-        <section>
-            {/* The 'heading' class is global, so no change here */}
-            <h2 className="heading">Our <span>Trainers</span></h2>
-            <div className={styles.aboutContainer}> {/* Apply module class */}
-                {trainers.map((t, i) => (
-                    <TrainerCard key={i} {...t} />
-                ))}
-            </div>
-        </section>
-    );
+  const [trainers, setTrainers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch('http://localhost:8080/api/trainers')
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then(data => setTrainers(data))
+      .catch(err => {
+        console.error(err);
+        setError(err.message);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <p>Loading trainers...</p>;
+  if (error)   return <p>Error loading trainers: {error}</p>;
+
+  return (
+    <section>
+      <h2 className="heading">Our <span>Trainers</span></h2>
+      <div className={styles.aboutContainer}>
+        {trainers.map(t => (
+          <TrainerCard
+            key={t.id}
+            img={t.imgUrl}
+            name={t.name}
+            title={t.title}
+            achievements={t.achievements}
+            bio={t.bio}
+          />
+        ))}
+      </div>
+    </section>
+  );
 }

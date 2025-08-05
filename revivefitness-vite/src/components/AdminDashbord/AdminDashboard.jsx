@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './AdminDashboard.module.css';
+import api from '../../lib/api';
 
 // Stats card component
 const StatsCard = ({ title, value }) => (
@@ -55,53 +56,57 @@ export default function AdminDashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [membersResponse, programsResponse, trainersResponse, statsResponse, challengeResponse, allChallengesResponse] = await Promise.all([
-          fetch('http://localhost:8080/api/members'),
-          fetch('http://localhost:8080/api/programs'),
-          fetch('http://localhost:8080/api/trainers'),
-          fetch('http://localhost:8080/api/admin/stats'),
-          fetch('http://localhost:8080/api/current-challenges'),
-          fetch('http://localhost:8080/api/current-challenges/all'),
-        ]);
+  const fetchData = async () => {
+    try {
+      // 1️⃣ all six calls in parallel, via axios
+      const [
+        membersRes,
+        programsRes,
+        trainersRes,
+        statsRes,
+        challengeRes,
+        allChallengesRes
+      ] = await Promise.all([
+        api.get('/members'),
+        api.get('/programs'),
+        api.get('/trainers'),
+        api.get('/admin/stats'),
+        api.get('/current-challenges'),
+        api.get('/current-challenges/all'),
+      ]);
 
-        if (!membersResponse.ok) throw new Error('Failed to fetch members');
-        if (!programsResponse.ok) throw new Error('Failed to fetch programs');
-        if (!trainersResponse.ok) throw new Error('Failed to fetch trainers');
-        if (!statsResponse.ok) throw new Error('Failed to fetch dashboard stats');
-        if (!challengeResponse.ok) throw new Error('Failed to fetch current challenge');
+      // 2️⃣ pull out .data from each response
+      const membersData       = membersRes.data;
+      const programsData      = programsRes.data;
+      const trainersData      = trainersRes.data;
+      const statsData         = statsRes.data;
+      const challengeData     = challengeRes.data;
+      const allChallengesData = allChallengesRes.data;
 
-        const membersData = await membersResponse.json();
-        setMembers(membersData);
-        setFilteredMembers(membersData);
+      // 3️⃣ set your state exactly as before
+      setMembers(membersData);
+      setFilteredMembers(membersData);
 
-        const programsData = await programsResponse.json();
-        setPrograms(programsData);
-        
-        const trainersData = await trainersResponse.json();
-        setTrainers(trainersData);
-        
-        const statsData = await statsResponse.json();
-        setStats(statsData);
-        
-        const challengeData = await challengeResponse.json();
-        setCurrentChallenge(challengeData);
-        
-        if (allChallengesResponse.ok) {
-          const allChallengesData = await allChallengesResponse.json();
-          setAllChallenges(allChallengesData);
-        }
-
-      } catch (err) {
-        console.error('Data fetching error:', err);
-        setError("Failed to load data. Please check the server connection.");
-      } finally {
-        setLoading(false);
+      setPrograms(programsData);
+      setTrainers(trainersData);
+      setStats(statsData);
+      setCurrentChallenge(challengeData);
+      
+      // only set “allChallenges” if it exists
+      if (allChallengesData) {
+        setAllChallenges(allChallengesData);
       }
-    };
-    fetchData();
-  }, []);
+
+    } catch (err) {
+      console.error('Data fetching error:', err);
+      setError("Failed to load data. Please check the server connection.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, []);
   
   useEffect(() => {
     const lowercasedQuery = searchQuery.toLowerCase();

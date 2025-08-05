@@ -8,7 +8,14 @@ const API_BASE = 'http://localhost:8080';
 
 /** Helper: fetch JSON or log errors */
 async function fetchJson(url, options = {}) {
-  const resp = await fetch(url, options);
+  const resp = await fetch(url, {
+    ...options,
+    headers: {
+     'Content-Type': 'application/json',
+     // auto-inject the JWT
+     Authorization: `Bearer ${localStorage.getItem('token')}`
+   }
+    });
   const text = await resp.text();
   if (!resp.ok) {
     console.error(`Fetch error ${resp.status} at ${url}:`, text);

@@ -37,7 +37,7 @@ public class MemberController {
         public String password;
     }
 
-    @PostMapping("/login")
+    // @PostMapping("/login")
     public ResponseEntity<MemberDTO> login(@RequestBody LoginRequest req) {
         Member m = memberRepository.findByEmail(req.email)
             .orElseThrow(() -> new ResponseStatusException(

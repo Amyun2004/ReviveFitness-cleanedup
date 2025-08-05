@@ -23,9 +23,13 @@ export default function LoginPage() {
       });
 
       if (response.ok) {
-        const member = await response.json();
+        // pull off the token, leave the rest as “member”
+       const { token, ...member } = await response.json();
+       // 1️⃣ preserve your existing member object
         localStorage.setItem('member', JSON.stringify(member));
-        navigate('/membership');
+        // 2️⃣ store the JWT for future calls
+       localStorage.setItem('token', token);
+       navigate('/membership');
       } else {
         const errorData = await response.json();
         setErrorMessage(errorData.message || 'Invalid credentials. Please try again.');

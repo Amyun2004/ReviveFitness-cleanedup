@@ -6,6 +6,7 @@ import com.ReviveFitness.repository.MemberRepository;
 import com.ReviveFitness.repository.ProgramRepository;
 import com.ReviveFitness.repository.AttendanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -29,15 +30,14 @@ public class AdminService {
 
     public Admin authenticateAdmin(String adminId, String password) {
         Admin admin = adminRepository.findByAdminId(adminId);
-        
-        if (admin != null && admin.getIsActive()) {
-            // WARNING: This is comparing plain text passwords - NOT secure!
-            // You should use BCrypt in production
-            if (admin.getPassword().equals(password)) {
-                return admin;
-            }
+        if (admin == null || !admin.getIsActive()) {
+            throw new BadCredentialsException("Invalid adminId or inactive account");
         }
-        return null;
+        // Plain-text check for now; swap for BCryptPasswordEncoder.matches() in prod
+        if (!admin.getPassword().equals(password)) {
+            throw new BadCredentialsException("Invalid adminId or password");
+        }
+        return admin;
     }
 
     public void updateLastLogin(Long adminId) {
@@ -47,6 +47,7 @@ public class AdminService {
             adminRepository.save(admin);
         }
     }
+
 
     public Map<String, Object> getDashboardStats() {
         Map<String, Object> stats = new HashMap<>();

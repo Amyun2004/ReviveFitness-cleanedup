@@ -10,4 +10,5 @@ import lombok.*;
 public class AdminLoginRequest {
     private String adminId;
     private String password;
+    
 }

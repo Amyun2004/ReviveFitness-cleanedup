@@ -1,75 +1,56 @@
 package com.ReviveFitness.controller;
 
-import com.ReviveFitness.model.Admin;
-import com.ReviveFitness.service.AdminService;
 import com.ReviveFitness.dto.AdminLoginRequest;
-import com.ReviveFitness.dto.AdminLoginResponse;
+import com.ReviveFitness.model.Admin;
+import com.ReviveFitness.security.JwtProvider;
+import com.ReviveFitness.service.AdminService;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"})
 @RestController
 @RequestMapping("/api/admin")
 public class AdminAuthController {
 
-    @Autowired
-    private AdminService adminService;
+    @Autowired private AdminService adminService;
+    @Autowired private JwtProvider jwtProvider;
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginAdmin(@RequestBody AdminLoginRequest loginRequest) {
+    public ResponseEntity<?> login(@RequestBody AdminLoginRequest loginReq) {
         try {
+            // 1) authenticate or throw
             Admin admin = adminService.authenticateAdmin(
-                loginRequest.getAdminId(), 
-                loginRequest.getPassword()
+                loginReq.getAdminId(),
+                loginReq.getPassword()
             );
-            
-            if (admin != null) {
-                // Update last login
-                adminService.updateLastLogin(admin.getId());
-                
-                // Create response
-                AdminLoginResponse response = AdminLoginResponse.builder()
-                    .id(admin.getId())
-                    .adminId(admin.getAdminId())
-                    .name(admin.getName())
-                    .email(admin.getEmail())
-                    .role("admin")
-                    .message("Login successful")
-                    .build();
-                
-                return ResponseEntity.ok(response);
-            } else {
-                return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("message", "Invalid admin credentials"));
-            }
-        } catch (Exception e) {
+
+            // 2) issue JWT
+            String token = jwtProvider.generateToken(admin.getAdminId());
+
+            // 3) update last-login timestamp
+            adminService.updateLastLogin(admin.getId());
+
+            // 4) reply with token + adminId
+            return ResponseEntity.ok(Map.of(
+                "token",   token,
+                "adminId", admin.getAdminId()
+            ));
+
+        } catch (BadCredentialsException ex) {
+            // invalid credentials → 401
+            return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("error", ex.getMessage()));
+        } catch (Exception ex) {
+            // any other error → 500
             return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("message", "An error occurred during login"));
-        }
-    }
-
-    @PostMapping("/logout")
-    public ResponseEntity<?> logoutAdmin() {
-        // In a real application, you might want to invalidate tokens here
-        return ResponseEntity.ok(Map.of("message", "Logged out successfully"));
-    }
-
-    // Add this to your existing AdminController for the dashboard stats
-    @GetMapping("/stats")
-    public ResponseEntity<?> getAdminStats() {
-        try {
-            Map<String, Object> stats = adminService.getDashboardStats();
-            return ResponseEntity.ok(stats);
-        } catch (Exception e) {
-            return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("message", "Error fetching stats"));
+                .body(Map.of("error", "Login failed"));
         }
     }
 }

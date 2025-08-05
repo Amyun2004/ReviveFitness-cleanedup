@@ -11,11 +11,13 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,5 +109,21 @@ public class MemberService {
         m.setProfilePhotoUrl(url);
         memberRepo.save(m);
         return url;
+    }
+    public Member authenticate(String email, String rawPassword) {
+        Member m = memberRepo.findByEmail(email)
+              .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
+
+        // WARNING: plain-text comparison; swap in BCrypt matches() in prod
+        if (!m.getPassword().equals(rawPassword)) {
+            throw new BadCredentialsException("Invalid email or password");
+        }
+        return m;
+    }
+    public void updateLastLogin(Long memberId) {
+        memberRepo.findById(memberId).ifPresent(m -> {
+            m.setLastLogin(LocalDateTime.now());
+            memberRepo.save(m);
+        });
     }
 }

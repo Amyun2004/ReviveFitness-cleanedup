@@ -2,6 +2,7 @@ package com.ReviveFitness.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,6 +20,9 @@ public class Member {
 
     @Column(name = "join_date")
     private LocalDate joinDate;
+
+    @Column(name = "last_login")
+    private LocalDateTime lastLogin;
 
     @Column(name = "profile_photo_url")
     private String profilePhotoUrl;
@@ -41,7 +45,7 @@ public class Member {
 
     public Member() {}
 
-    // — Getters & Setters —
+    // Getters & Setters
 
     public Long getId() {
         return id;
@@ -76,6 +80,13 @@ public class Member {
     }
     public void setJoinDate(LocalDate joinDate) {
         this.joinDate = joinDate;
+    }
+
+    public LocalDateTime getLastLogin() {
+        return lastLogin;
+    }
+    public void setLastLogin(LocalDateTime lastLogin) {
+        this.lastLogin = lastLogin;
     }
 
     public String getProfilePhotoUrl() {

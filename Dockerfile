@@ -1,1 +1,15 @@
-# ---------- Build stage ----------echo FROM maven:3.9.8-eclipse-temurin-21 AS buildecho WORKDIR /srcecho COPY demo/pom.xml .echo RUN mvn -q -DskipTests dependency:go-offlineecho COPY demo/ .echo RUN mvn -DskipTests packageecho.echo # ---------- Run stage ----------echo FROM eclipse-temurin:21-jreecho WORKDIR /appecho COPY --from=build /src/target/*-SNAPSHOT.jar app.jarecho EXPOSE 8080echo ENV JAVA_OPTS=""echo CMD ["sh","-c","java $JAVA_OPTS -Dspring.profiles.active=prod -jar /app/app.jar"]
+# ---------- Build stage ----------
+FROM maven:3.9.8-eclipse-temurin-21 AS build
+WORKDIR /src
+COPY demo/pom.xml .
+RUN mvn -q -DskipTests dependency:go-offline
+COPY demo/ .
+RUN mvn -DskipTests package
+
+# ---------- Run stage ----------
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+COPY --from=build /src/target/*-SNAPSHOT.jar app.jar
+EXPOSE 8080
+ENV JAVA_OPTS=""
+CMD ["sh","-c","java $JAVA_OPTS -Dspring.profiles.active=prod -jar /app/app.jar"]

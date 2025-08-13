@@ -1,7 +1,7 @@
 # ---------- Build stage ----------
 FROM maven:3.9.8-eclipse-temurin-21 AS build
 WORKDIR /src
-# copy only the backend first to leverage Docker cache
+# copy only the backend to leverage cache
 COPY demo/pom.xml .
 RUN mvn -q -DskipTests dependency:go-offline
 COPY demo/ .
